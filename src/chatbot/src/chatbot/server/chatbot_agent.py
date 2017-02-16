@@ -19,6 +19,8 @@ INVALID_SESSION = 3
 INVALID_QUESTION = 4
 
 logger = logging.getLogger('hr.chatbot.server.chatbot_agent')
+# Strip the silent characters at the end of answer: ?!.
+STRIP_SILENT_CHARS = True
 
 from loader import load_characters
 from config import CHARACTER_PATH, RESET_SESSION_BY_HELLO
@@ -541,6 +543,8 @@ def ask(question, lang, sid, query=False):
     for c in responding_characters:
         if c.is_command(question):
             response.update(c.respond(question, lang, sess, query))
+            if STRIP_SILENT_CHARS:
+                response['text'] = response['text'].strip().strip(".?!")
             return response, SUCCESS
 
     sess.set_characters(responding_characters)
@@ -588,6 +592,8 @@ def ask(question, lang, sid, query=False):
     if _response is not None and _response.get('text'):
         response.update(_response)
         logger.info("Ask {}, response {}".format(question, response))
+        if STRIP_SILENT_CHARS:
+            response['text'] = response['text'].strip().strip(".?!")
         return response, SUCCESS
     else:
         logger.error("No pattern match")

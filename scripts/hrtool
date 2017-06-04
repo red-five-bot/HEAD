@@ -3,6 +3,7 @@
 # hrtool.sh
 #
 # This script will setup/build/run Hanson Robotics stack on you machine
+#red-five-bot Modifications
 
 set -e
 
@@ -408,29 +409,6 @@ install_ffmpeg() {
     add_ppa ppa:mc3man/trusty-media
     apt_get_install ffmpeg
     info "Installing ffmpeg done"
-}
-
-install_tts() {
-    # For Festival
-    apt_get_install festival festival-dev
-
-    # Install female voice
-    mkdir -p ~/.hr/tts/festival/voices
-    # Install female voice
-    if [[ ! -f ~/.hr/tts/festival/voices/festvox_cmu_us_slt_arctic_hts.tar.gz ]]; then
-        MD5SUMS["festvox_cmu_us_slt_arctic_hts.tar.gz"]=a9b53441968f6bc612b85c04bbc4cf0f
-        wget_cache http://festvox.org/packed/festival/2.1/festvox_cmu_us_slt_arctic_hts.tar.gz
-        cp ${HR_CACHE}/festvox_cmu_us_slt_arctic_hts.tar.gz $HOME/.hr/tts/festival/voices
-    fi
-    tar zxf ~/.hr/tts/festival/voices/festvox_cmu_us_slt_arctic_hts.tar.gz -C /tmp
-    $SUDO cp -rT /tmp/festival/lib/voices /usr/share/festival/voices
-    $SUDO rm -rf /tmp/festival
-
-    # MaryTTS
-    mkdir -p ~/.hr/tts/marytts
-    MD5SUMS["marytts-5.1.2.zip"]=99e774dd4c6e791ad916ae76351522f0
-    wget_cache https://github.com/marytts/marytts/releases/download/v5.1.2/marytts-5.1.2.zip
-    unzip -qod ~/.hr/tts/marytts ${HR_CACHE}/marytts-5.1.2.zip
 }
 
 install_other_deps() {
